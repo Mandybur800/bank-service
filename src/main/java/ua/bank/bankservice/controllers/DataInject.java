@@ -19,10 +19,10 @@ public class DataInject {
     @PostConstruct
     private void init() {
         Role user = new Role();
-        user.setRoleName(Role.Roles.USER);
+        user.setRoleName(Role.RoleType.USER);
         roleService.create(user);
         Role admin = new Role();
-        admin.setRoleName(Role.Roles.ADMIN);
+        admin.setRoleName(Role.RoleType.ADMIN);
         roleService.create(admin);
         User adminUser = new User();
         adminUser.setName("Odmen");
