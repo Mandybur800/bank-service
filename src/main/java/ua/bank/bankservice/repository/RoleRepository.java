@@ -6,5 +6,5 @@ import ua.bank.bankservice.model.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     @Query(value = "FROM roles WHERE roleName = ?1")
-    Role getByName(String name);
+    Role getByName(Role.RoleType name);
 }
