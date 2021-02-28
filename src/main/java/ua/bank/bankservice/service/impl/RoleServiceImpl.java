@@ -18,6 +18,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getByName(String name) {
-        return roleRepository.getByName(Role.RoleType.valueOf(name));
+        return roleRepository.getByName(Role.RoleType.valueOf(name))
+                .orElseThrow(() -> new RuntimeException("Can't get role '" + name + "' from db"));
     }
 }
