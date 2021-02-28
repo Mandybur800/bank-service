@@ -1,5 +1,6 @@
 package ua.bank.bankservice.service.impl;
 
+import javax.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.bank.bankservice.model.Role;
@@ -18,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getByName(String name) {
-        return roleRepository.getByName(Role.RoleType.valueOf(name))
-                .orElseThrow(() -> new RuntimeException("Can't get role '" + name + "' from db"));
+        return roleRepository.getByName(Role.RoleType.valueOf(name)).orElseThrow(
+                () -> new EntityNotFoundException("Can't get role '" + name + "' from db"));
     }
 }
