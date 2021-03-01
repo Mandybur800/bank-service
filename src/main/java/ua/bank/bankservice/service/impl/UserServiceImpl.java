@@ -1,6 +1,6 @@
 package ua.bank.bankservice.service.impl;
 
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.bank.bankservice.model.User;
@@ -23,13 +23,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> get(Long id) {
-        return userRepository.findById(id);
+    public User get(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can't get user with id: '" + id + "'"));
     }
 
     @Override
-    public Optional<User> getByPhone(String phone) {
-        return userRepository.getFirstByPhoneNumber(phone);
+    public User getByPhone(String phone) {
+        return userRepository.getFirstByPhoneNumber(phone).orElseThrow(
+                () -> new EntityNotFoundException("Can't get user with phone: '" + phone + "'"));
     }
 
     @Override
