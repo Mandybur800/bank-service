@@ -41,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionFirst.setType(Transaction.OperationType.OUTCOMING);
         transactionRepository.save(transactionFirst);
         accountFrom.setBalance(accountFrom.getBalance().subtract(new BigDecimal(amount)));
-        if (accountFrom.getBalance().compareTo(new BigDecimal(0)) < 0) {
+        if (accountFrom.getBalance().compareTo(BigDecimal.ZERO) < 0) {
             throw new NotEnoughMoneyException("Not enough money on account #" + fromAccount);
         }
         accountService.create(accountFrom);
