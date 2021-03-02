@@ -42,13 +42,13 @@ public class DataInject {
         firstAccount.setActive(true);
         firstAccount.setUser(adminUser);
         firstAccount.setBalance(BigDecimal.valueOf(20000));
-        accountService.create(firstAccount);
+        accountService.save(firstAccount);
         Account secondAccount = new Account();
         secondAccount.setAccountNumber("5678");
         secondAccount.setCurrency(Currency.USD);
         secondAccount.setActive(true);
         secondAccount.setUser(adminUser);
         secondAccount.setBalance(BigDecimal.valueOf(500));
-        accountService.create(secondAccount);
+        accountService.save(secondAccount);
     }
 }

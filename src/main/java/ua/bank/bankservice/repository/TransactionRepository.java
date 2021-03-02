@@ -8,7 +8,6 @@ import ua.bank.bankservice.model.Account;
 import ua.bank.bankservice.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    @Query(value = "FROM transactions t JOIN FETCH t.accountFrom af JOIN FETCH t.accountTo at "
-            + "WHERE af = ?1 OR at = ?1")
+    @Query(value = "FROM transactions t WHERE t.accountTo = ?1 OR t.accountFrom = ?1")
     List<Transaction> getAllByAccount(Account account, Pageable pageable);
 }
