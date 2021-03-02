@@ -29,11 +29,4 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Can't found account by number"
                         + accountNumber));
     }
-
-    @Override
-    public void blockAccount(String accountNumber) {
-        Account account = getByAccountNumber(accountNumber);
-        account.setActive(false);
-        accountRepository.save(account);
-    }
 }

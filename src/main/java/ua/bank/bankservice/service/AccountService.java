@@ -9,6 +9,4 @@ public interface AccountService {
     List<Account> getAccountsByPhone(String phone);
 
     Account getByAccountNumber(String accountNumber);
-
-    void blockAccount(String accountNumber);
 }

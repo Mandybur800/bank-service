@@ -23,37 +23,34 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getAllByAccount(int page, int size, Account account) {
-        PageRequest date = PageRequest.of(page, size,
+        PageRequest pageable = PageRequest.of(page, size,
                 Sort.by("date").descending().and(Sort.by("id")));
-        return transactionRepository.getAllByAccountNumber(account.getAccountNumber(), date);
+        return transactionRepository.getAllByAccount(account, pageable);
     }
 
     @Override
     @Transactional
-    public void transfer(String fromAccount, String toAccount, int amount) {
+    public void transfer(Account fromAccount, Account toAccount, int amount) {
         Transaction transactionFirst = new Transaction();
-        Account accountFrom = accountService.getByAccountNumber(fromAccount);
-        Account accountTo = accountService.getByAccountNumber(toAccount);
-        transactionFirst.setAccountFrom(accountFrom);
-        transactionFirst.setAccountTo(accountTo);
+        transactionFirst.setAccountFrom(fromAccount);
+        transactionFirst.setAccountTo(toAccount);
         transactionFirst.setDate(LocalDateTime.now());
         transactionFirst.setAmount(new BigDecimal(amount));
         transactionFirst.setType(Transaction.OperationType.OUTCOMING);
         transactionRepository.save(transactionFirst);
-        accountFrom.setBalance(accountFrom.getBalance().subtract(new BigDecimal(amount)));
-        if (accountFrom.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+        fromAccount.setBalance(fromAccount.getBalance().subtract(new BigDecimal(amount)));
+        if (fromAccount.getBalance().compareTo(BigDecimal.ZERO) < 0) {
             throw new NotEnoughMoneyException("Not enough money on account #" + fromAccount);
         }
-        accountService.create(accountFrom);
+        accountService.create(fromAccount);
         Transaction transactionSecond = new Transaction();
-        transactionSecond.setAccountFrom(accountFrom);
-        transactionSecond.setAccountTo(accountTo);
+        transactionSecond.setAccountFrom(fromAccount);
+        transactionSecond.setAccountTo(toAccount);
         transactionSecond.setDate(transactionFirst.getDate());
         transactionSecond.setAmount(new BigDecimal(amount));
         transactionSecond.setType(Transaction.OperationType.INCOMING);
         transactionRepository.save(transactionSecond);
-        accountTo.setBalance(accountTo.getBalance().add(transactionSecond.getAmount()));
-        accountService.create(accountTo);
+        toAccount.setBalance(toAccount.getBalance().add(transactionSecond.getAmount()));
+        accountService.create(toAccount);
     }
-
 }
