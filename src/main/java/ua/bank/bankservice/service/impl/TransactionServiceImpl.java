@@ -1,5 +1,6 @@
 package ua.bank.bankservice.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,14 +14,12 @@ import ua.bank.bankservice.model.Transaction;
 import ua.bank.bankservice.repository.TransactionRepository;
 import ua.bank.bankservice.service.AccountService;
 import ua.bank.bankservice.service.TransactionService;
-import ua.bank.bankservice.util.CurrencyConverter;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
-    private final CurrencyConverter converter;
 
     @Override
     public List<Transaction> getAllByAccount(int page, int size, Account account) {
@@ -38,11 +37,11 @@ public class TransactionServiceImpl implements TransactionService {
         transactionFirst.setAccountFrom(accountFrom);
         transactionFirst.setAccountTo(accountTo);
         transactionFirst.setDate(LocalDateTime.now());
-        transactionFirst.setAmount(amount);
+        transactionFirst.setAmount(new BigDecimal(amount));
         transactionFirst.setType(Transaction.OperationType.OUTCOMING);
         transactionRepository.save(transactionFirst);
-        accountFrom.setBalance(accountFrom.getBalance() - amount);
-        if (accountFrom.getBalance() < 0) {
+        accountFrom.setBalance(accountFrom.getBalance().subtract(new BigDecimal(amount)));
+        if (accountFrom.getBalance().compareTo(new BigDecimal(0)) < 0) {
             throw new NotEnoughMoneyException("Not enough money on account #" + fromAccount);
         }
         accountService.create(accountFrom);
@@ -50,11 +49,10 @@ public class TransactionServiceImpl implements TransactionService {
         transactionSecond.setAccountFrom(accountFrom);
         transactionSecond.setAccountTo(accountTo);
         transactionSecond.setDate(transactionFirst.getDate());
-        transactionSecond.setAmount(converter.convert(accountFrom.getCurrency(),
-                accountTo.getCurrency(), amount));
+        transactionSecond.setAmount(new BigDecimal(amount));
         transactionSecond.setType(Transaction.OperationType.INCOMING);
         transactionRepository.save(transactionSecond);
-        accountTo.setBalance(accountTo.getBalance() + transactionSecond.getAmount());
+        accountTo.setBalance(accountTo.getBalance().add(transactionSecond.getAmount()));
         accountService.create(accountTo);
     }
 

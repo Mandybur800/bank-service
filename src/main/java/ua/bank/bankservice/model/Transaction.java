@@ -1,5 +1,6 @@
 package ua.bank.bankservice.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 import lombok.Data;
 
 @Entity(name = "transactions")
@@ -24,7 +26,9 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "account_to", nullable = false)
     private Account accountTo;
-    private double amount;
+    @Min(0)
+    @Column(nullable = false)
+    private BigDecimal amount;
     @Column(nullable = false)
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)

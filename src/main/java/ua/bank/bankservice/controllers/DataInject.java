@@ -1,5 +1,6 @@
 package ua.bank.bankservice.controllers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -40,14 +41,14 @@ public class DataInject {
         firstAccount.setCurrency(Currency.UAH);
         firstAccount.setActive(true);
         firstAccount.setUser(adminUser);
-        firstAccount.setBalance(20000);
+        firstAccount.setBalance(new BigDecimal(20000));
         accountService.create(firstAccount);
         Account secondAccount = new Account();
         secondAccount.setAccountNumber("5678");
         secondAccount.setCurrency(Currency.USD);
         secondAccount.setActive(true);
         secondAccount.setUser(adminUser);
-        secondAccount.setBalance(500);
+        secondAccount.setBalance(new BigDecimal(500));
         accountService.create(secondAccount);
     }
 }
