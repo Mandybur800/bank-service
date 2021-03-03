@@ -32,15 +32,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void transfer(Account fromAccount, Account toAccount, int amount) {
+    public void transfer(Account fromAccount, Account toAccount, BigDecimal amount) {
         Transaction transactionFirst = new Transaction();
         transactionFirst.setAccountFrom(fromAccount);
         transactionFirst.setAccountTo(toAccount);
         transactionFirst.setDate(LocalDateTime.now());
-        transactionFirst.setAmount(BigDecimal.valueOf(amount));
+        transactionFirst.setAmount(amount);
         transactionFirst.setType(Transaction.OperationType.OUTCOMING);
         transactionRepository.save(transactionFirst);
-        fromAccount.setBalance(fromAccount.getBalance().subtract(new BigDecimal(amount)));
+        fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         if (fromAccount.getBalance().compareTo(BigDecimal.ZERO) < 0) {
             throw new NotEnoughMoneyException("Not enough money on account #" + fromAccount);
         }
