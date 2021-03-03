@@ -14,10 +14,12 @@ import ua.bank.bankservice.model.Transaction;
 import ua.bank.bankservice.repository.TransactionRepository;
 import ua.bank.bankservice.service.AccountService;
 import ua.bank.bankservice.service.TransactionService;
+import ua.bank.bankservice.util.CurrencyConverter;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
+    private final CurrencyConverter converter;
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
 
@@ -35,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionFirst.setAccountFrom(fromAccount);
         transactionFirst.setAccountTo(toAccount);
         transactionFirst.setDate(LocalDateTime.now());
-        transactionFirst.setAmount(new BigDecimal(amount));
+        transactionFirst.setAmount(BigDecimal.valueOf(amount));
         transactionFirst.setType(Transaction.OperationType.OUTCOMING);
         transactionRepository.save(transactionFirst);
         fromAccount.setBalance(fromAccount.getBalance().subtract(new BigDecimal(amount)));
@@ -47,7 +49,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactionSecond.setAccountFrom(fromAccount);
         transactionSecond.setAccountTo(toAccount);
         transactionSecond.setDate(transactionFirst.getDate());
-        transactionSecond.setAmount(new BigDecimal(amount));
+        transactionSecond.setAmount(converter.convert(fromAccount.getCurrency(),
+                toAccount.getCurrency(), amount));
         transactionSecond.setType(Transaction.OperationType.INCOMING);
         transactionRepository.save(transactionSecond);
         toAccount.setBalance(toAccount.getBalance().add(transactionSecond.getAmount()));
