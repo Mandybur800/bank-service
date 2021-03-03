@@ -18,7 +18,7 @@ public class HttpClient {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(response.getEntity().getContent(), clazz);
         } catch (IOException e) {
-            throw new RuntimeException("Can't execute request:" + urlStr);
+            throw new RuntimeException("Can't execute request:" + urlStr, e);
         }
     }
 }
