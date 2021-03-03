@@ -1,10 +1,12 @@
 package ua.bank.bankservice.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class CurrencyConverterDto {
-    private Object motd;
+    @JsonProperty("motd")
+    private Object metaData;
     private boolean success;
     private Object query;
     private Object info;

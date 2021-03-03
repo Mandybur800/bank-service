@@ -9,15 +9,18 @@ import ua.bank.bankservice.model.dto.CurrencyConverterDto;
 
 @Component
 public class CurrencyConverter {
-    @Autowired
     private HttpClient client;
     @Value(value = "${url.converter}")
     private String baseUrl;
 
-    public BigDecimal convert(Currency fromCurrency, Currency toCurrency, BigDecimal amount) {
+    @Autowired
+    public CurrencyConverter(HttpClient client) {
+        this.client = client;
+    }
 
-        String urlStr = baseUrl + "/convert?from=" + fromCurrency.name()
-                + "&to=" + toCurrency.name() + "&amount=" + amount;
+    public BigDecimal convert(Currency fromCurrency, Currency toCurrency, BigDecimal amount) {
+        String urlStr = String.format("%s/convert?from=%s&to=%s&amount=%s",baseUrl,
+                fromCurrency.name(), toCurrency.name(), amount);
         CurrencyConverterDto currencyConverterDto = client.handleRequest(urlStr,
                 CurrencyConverterDto.class);
         return BigDecimal.valueOf(currencyConverterDto.getResult());
